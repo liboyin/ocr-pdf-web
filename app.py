@@ -16,7 +16,7 @@ def main():
     redo_ocr = st.checkbox("--redo-ocr", help="Redo OCR on an OCRed file")
     optimize_n = st.slider("--optimize N", min_value=0, max_value=3, value=1, help="Reduce the output PDF file size. 0 to perform lossless optimizations; 3 for most aggressive optimization")
 
-    if st.button("Process"):
+    if st.button("Process", disabled=not uploaded_file):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_input:
             tmp_input.write(uploaded_file.read())
             input_pdf = tmp_input.name
