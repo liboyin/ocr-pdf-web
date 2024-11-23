@@ -40,9 +40,9 @@ def main():
             else:
                 with open(output_pdf, "rb") as file:
                     st.download_button(
-                        label="Download processed PDF",
+                        label="Download",
                         data=file,
-                        file_name="processed.pdf",
+                        file_name=uploaded_file.name,
                         mime="application/pdf"
                     )
         os.remove(input_pdf)
