@@ -10,7 +10,6 @@ uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file:
     rotate_pages = st.checkbox("--rotate-pages", help="Rotate pages to correct orientation")
-    remove_background = st.checkbox("--remove-background", help="Remove background from the PDF")
     deskew = st.checkbox("--deskew", help="Deskew the PDF pages")
     clean = st.checkbox("--clean", help="Clean the PDF")
     clean_final = st.checkbox("--clean-final", help="Perform final cleaning on the PDF")
@@ -25,7 +24,6 @@ if uploaded_file:
         output_pdf = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
         flags = {
             "--rotate-pages": rotate_pages,
-            "--remove-background": remove_background,
             "--deskew": deskew,
             "--clean": clean,
             "--clean-final": clean_final,
