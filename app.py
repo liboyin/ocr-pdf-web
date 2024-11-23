@@ -1,3 +1,4 @@
+import itertools
 import subprocess
 import tempfile
 
@@ -6,6 +7,7 @@ import streamlit as st
 
 def main():
     """Streamlit app entry point."""
+    st.set_page_config(page_title="OCRmyPDF")
     st.title("OCRmyPDF Web Portal")
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
     rotate_pages = st.checkbox("--rotate-pages", help="Fix a document that contains a mix of landscape and portrait pages")
@@ -16,7 +18,8 @@ def main():
     optimize_n = st.slider("--optimize N", min_value=0, max_value=3, value=1, help="Reduce the output PDF file size. 0 to perform lossless optimizations; 3 for most aggressive optimization")
 
     if st.button("Process", disabled=not uploaded_file):
-        with tempfile.NamedTemporaryFile(suffix=".pdf") as input_file, tempfile.NamedTemporaryFile(suffix=".pdf") as output_file:
+        with (tempfile.NamedTemporaryFile(suffix=".pdf") as input_file,
+              tempfile.NamedTemporaryFile(suffix=".pdf") as output_file):
             input_file.write(uploaded_file.read())
             input_file.flush()
             flags = {
@@ -26,9 +29,12 @@ def main():
                 "--clean-final": clean_final,
                 "--redo-ocr": redo_ocr,
             }
-            cmd = ["ocrmypdf"] + [flag for flag, enabled in flags.items() if enabled]
-            cmd.extend(["--optimize", str(optimize_n), input_file.name, output_file.name])
-
+            cmd = list(itertools.chain(
+                ["ocrmypdf"],
+                (flag for flag, enabled in flags.items() if enabled),
+                ["--optimize", str(optimize_n)],
+                [input_file.name, output_file.name],
+            ))
             with st.spinner("Processing..."):
                 result = subprocess.run(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
                 if result.returncode != 0:
