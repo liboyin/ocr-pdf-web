@@ -1,0 +1,41 @@
+{
+    "name": "ocr-pdf-web",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2":{
+            "installZsh": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "true"
+        }
+    },
+    "remoteUser": "vscode",
+    "workspaceFolder": "/workspaces/ocr-pdf-web",
+    "mounts": [
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "charliermarsh.ruff",
+                "github.copilot",
+                "github.copilot-chat",
+                "mhutchie.git-graph",
+                "ms-python.debugpy",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-vscode.live-server",
+                "ryu1kn.partial-diff",
+                "saoudrizwan.claude-dev",
+                "streetsidesoftware.code-spell-checker",
+                "tamasfe.even-better-toml",
+                "visualstudioexptteam.intellicode-api-usage-examples",
+                "visualstudioexptteam.vscodeintellicode"
+            ]
+        }
+    }
+}
