@@ -9,12 +9,12 @@ def main():
     """Streamlit app entry point."""
     st.title("OCRmyPDF Web Portal")
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
-    rotate_pages = st.checkbox("--rotate-pages", help="Rotate pages to correct orientation")
-    deskew = st.checkbox("--deskew", help="Deskew the PDF pages")
-    clean = st.checkbox("--clean", help="Clean the PDF")
-    clean_final = st.checkbox("--clean-final", help="Perform final cleaning on the PDF")
-    redo_ocr = st.checkbox("--redo-ocr", help="Redo OCR on the PDF")
-    optimize_n = st.slider("--optimize N", min_value=0, max_value=3, value=1, help="Optimize the PDF with level N")
+    rotate_pages = st.checkbox("--rotate-pages", help="Fix a document that contains a mix of landscape and portrait pages")
+    deskew = st.checkbox("--deskew", help="Rotate pages so that text is horizontal")
+    clean = st.checkbox("--clean", help="Clean up pages before OCR, but does not alter the final output. Disables --clean-final")
+    clean_final = st.checkbox("--clean-final", help="Clean up pages before OCR and inserts the page into the final output. Disables --clean")
+    redo_ocr = st.checkbox("--redo-ocr", help="Redo OCR on an OCRed file")
+    optimize_n = st.slider("--optimize N", min_value=0, max_value=3, value=1, help="Reduce the output PDF file size. 0 to perform lossless optimizations; 3 for most aggressive optimization")
 
     if st.button("Process"):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_input:
