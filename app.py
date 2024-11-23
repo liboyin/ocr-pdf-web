@@ -4,18 +4,20 @@ import tempfile
 
 import streamlit as st
 
+CLEAN = "Clean up pages before OCR, but do not alter the final output"
+CLEAN_FINAL = "Clean up pages before OCR and inserts the page into the final output"
+
 
 def main():
     """Streamlit app entry point."""
     st.set_page_config(page_title="OCRmyPDF")
     st.title("OCRmyPDF Web Portal")
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
-    rotate_pages = st.checkbox("--rotate-pages", help="Fix a document that contains a mix of landscape and portrait pages")
-    deskew = st.checkbox("--deskew", help="Rotate pages so that text is horizontal")
-    clean = st.checkbox("--clean", help="Clean up pages before OCR, but does not alter the final output. Disables --clean-final")
-    clean_final = st.checkbox("--clean-final", help="Clean up pages before OCR and inserts the page into the final output. Disables --clean")
-    redo_ocr = st.checkbox("--redo-ocr", help="Redo OCR on an OCRed file")
-    optimize_n = st.slider("--optimize N", min_value=0, max_value=3, value=1, help="Reduce the output PDF file size. 0 to perform lossless optimizations; 3 for most aggressive optimization")
+    rotate_pages = st.checkbox("Fix a mixture of landscape and portrait pages")
+    deskew = st.checkbox("Rotate pages so that text is horizontal")
+    redo_ocr = st.checkbox("Redo OCR on an OCRed file")
+    clean_option = st.radio("Cleanup options", ("Do not clean up", CLEAN, CLEAN_FINAL))
+    optimize_n = st.slider("Reduce output PDF file size. 0 for lossless optimization; 3 for most aggressive optimization", min_value=0, max_value=3, value=1)
 
     if st.button("Process", disabled=not uploaded_file):
         with (tempfile.NamedTemporaryFile(suffix=".pdf") as input_file,
@@ -25,8 +27,8 @@ def main():
             flags = {
                 "--rotate-pages": rotate_pages,
                 "--deskew": deskew,
-                "--clean": clean,
-                "--clean-final": clean_final,
+                "--clean": clean_option == CLEAN,
+                "--clean-final": clean_option == CLEAN_FINAL,
                 "--redo-ocr": redo_ocr,
             }
             cmd = list(itertools.chain(
