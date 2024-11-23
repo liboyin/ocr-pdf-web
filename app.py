@@ -4,11 +4,11 @@ import tempfile
 
 import streamlit as st
 
-st.title("OCRmyPDF Web Portal")
 
-uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
-
-if uploaded_file:
+def main():
+    """Streamlit app entry point."""
+    st.title("OCRmyPDF Web Portal")
+    uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
     rotate_pages = st.checkbox("--rotate-pages", help="Rotate pages to correct orientation")
     deskew = st.checkbox("--deskew", help="Deskew the PDF pages")
     clean = st.checkbox("--clean", help="Clean the PDF")
@@ -47,5 +47,7 @@ if uploaded_file:
                     )
         os.remove(input_pdf)
         os.remove(output_pdf)
-else:
-    st.warning("Please upload a PDF file to begin.")
+
+
+if __name__ == "__main__":
+    main()
