@@ -10,7 +10,5 @@ WORKDIR /workspaces/ocr-pdf-web
 RUN ./docker_apt_install.sh
 RUN ./docker_pip_install.sh
 
-USER vscode
-
 EXPOSE 8501
 ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
