@@ -12,5 +12,4 @@ EOF
     cat "$PIP_CONF_PATH"
 fi
 
-pip --disable-pip-version-check --no-cache-dir install streamlit
-rm -rf /tmp/pip-tmp
+PIP_NO_CACHE_DIR=1 pipx install streamlit

@@ -9,6 +9,6 @@ if [ -n "$APT_PROXY" ]; then
 fi
 
 apt-get update
-apt-get install -y --no-install-recommends python3-pip
+apt-get install -y --no-install-recommends pipx
 apt-get clean
 rm -rf /var/lib/apt/lists/*

@@ -8,8 +8,9 @@ COPY . /workspaces/ocr-pdf-web
 WORKDIR /workspaces/ocr-pdf-web
 
 RUN ./docker_apt_install.sh
-RUN ./docker_pip_install.sh
 USER ubuntu
+RUN ./docker_pip_install.sh
 
 EXPOSE 8501
+# streamlit run app.py --server.port 8501 --server.address 0.0.0.0
 ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
