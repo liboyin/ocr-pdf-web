@@ -12,7 +12,7 @@
     "remoteUser": "ubuntu",
     "workspaceFolder": "/workspaces/ocr-pdf-web",
     "mounts": [
-        "source=${localEnv:HOME}/.ssh,target=/home/ubuntu/.ssh,type=bind"
+        "source=${localEnv:HOME}/.ssh,target=/home/ubuntu/.ssh,type=tmpfs"
     ],
     "customizations": {
         "vscode": {
