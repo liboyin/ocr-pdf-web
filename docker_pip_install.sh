@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Configure PyPI proxy
-if [ -n "$PYPI_PROXY" ]; then
+set -euo pipefail
+
+# Configure PyPI proxy if defined
+if [ -v PYPI_PROXY ]; then
     PIP_CONF_PATH=$HOME/.pip/pip.conf
     mkdir -p "$(dirname "$PIP_CONF_PATH")"
     cat <<EOF > "$PIP_CONF_PATH"

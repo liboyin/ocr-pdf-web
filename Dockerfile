@@ -4,7 +4,7 @@ FROM jbarlow83/ocrmypdf:latest
 #ARG PYPI_PROXY=http://192.168.0.4:3141/root/pypi/+simple/
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY . /workspaces/ocr-pdf-web
+COPY --chown=ubuntu . /workspaces/ocr-pdf-web
 WORKDIR /workspaces/ocr-pdf-web
 
 RUN ./docker_apt_install.sh
