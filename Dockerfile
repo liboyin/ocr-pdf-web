@@ -11,6 +11,6 @@ RUN ./docker_apt_install.sh
 USER ubuntu
 RUN ./docker_pip_install.sh
 
-EXPOSE 8501
-# streamlit run app.py --server.port 8501 --server.address 0.0.0.0
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+EXPOSE 8502
+# streamlit run app.py --server.port 8502 --server.address 0.0.0.0
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8502", "--server.address", "0.0.0.0"]
