@@ -22,12 +22,4 @@ else
     echo "Using existing Docker image..."
 fi
 
-# Create network if it doesn't exist
-if ! docker network inspect local-network >/dev/null 2>&1; then
-    echo "Creating Docker network: local-network"
-    docker network create local-network
-else
-    echo "Docker network local-network already exists"
-fi
-
-docker run --name ocr-pdf-web-app -d --rm --network local-network -p 8502:8502 ocr-pdf-web
+docker run --name ocr-pdf-web-app -d --rm -p 8502:8502 ocr-pdf-web
