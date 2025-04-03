@@ -12,5 +12,8 @@ USER ubuntu
 RUN ./docker_pip_install.sh
 
 EXPOSE 8502
+
+HEALTHCHECK --interval=60s --timeout=10s --start-period=30s CMD curl -f http://localhost:8502/_stcore/health
+
 # streamlit run app.py --server.port 8502 --server.address 0.0.0.0 --browser.gatherUsageStats false
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8502", "--server.address", "0.0.0.0" , "--browser.gatherUsageStats", "false"]
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8502", "--server.address", "0.0.0.0", "--browser.gatherUsageStats", "false"]
