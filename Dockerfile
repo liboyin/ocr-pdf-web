@@ -3,6 +3,7 @@ FROM jbarlow83/ocrmypdf:latest
 #ARG APT_PROXY=http://192.168.0.4:3142
 #ARG PYPI_PROXY=http://192.168.0.4:3141/root/pypi/+simple/
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Australia/Sydney
 
 COPY --chown=ubuntu . /workspaces/ocr-pdf-web
 WORKDIR /workspaces/ocr-pdf-web

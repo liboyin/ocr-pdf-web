@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from io import BytesIO
 from itertools import chain
 import subprocess
@@ -97,6 +98,7 @@ def main() -> None:
     """Streamlit app entry point."""
     st.set_page_config(page_title="OCRmyPDF")
     st.title("OCRmyPDF Web Portal")
+    st.caption(f"Last updated: {datetime.now().strftime('%H:%M:%S.%f')[:-3]}")
     uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
     rotate_pages = st.checkbox("Fix a mixture of landscape and portrait pages")
     deskew = st.checkbox("Rotate pages so that text is horizontal")
