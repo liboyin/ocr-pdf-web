@@ -14,5 +14,5 @@ USER ubuntu
 RUN ./docker_pip_install.sh
 
 EXPOSE 8502
-# streamlit run app.py --server.port 8502 --server.address 0.0.0.0 --browser.gatherUsageStats false
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "8502", "--server.address", "0.0.0.0", "--browser.gatherUsageStats", "false"]
+# streamlit run app.py
+ENTRYPOINT ["streamlit", "run", "app.py"]

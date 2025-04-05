@@ -1,0 +1,13 @@
+[global]
+disableWidgetStateDuplicationWarning = true
+
+[logger]
+
+level = "debug"
+
+[server]
+address = "0.0.0.0"
+port = 8502
+
+[browser]
+gatherUsageStats = false
