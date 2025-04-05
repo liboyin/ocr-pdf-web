@@ -1,9 +1,6 @@
 {
-    "name": "ocr-pdf-web",
-    "build": {
-        "dockerfile": "../Dockerfile",
-        "context": ".."
-    },
+    "dockerComposeFile": "../docker-compose.yaml",
+    "service": "app",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2":{
             "configureZshAsDefaultShell": "true"
@@ -12,7 +9,8 @@
     "remoteUser": "ubuntu",
     "workspaceFolder": "/workspaces/ocr-pdf-web",
     "mounts": [
-        "source=${localEnv:HOME}/.ssh,target=/home/ubuntu/.ssh,type=tmpfs"
+        "source=${localEnv:HOME}/.ssh,target=/home/ubuntu/.ssh,type=tmpfs",
+        "source=${localWorkspaceFolder},target=/workspaces/ocr-pdf-web,type=bind"
     ],
     "customizations": {
         "vscode": {
