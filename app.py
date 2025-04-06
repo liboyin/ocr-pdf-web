@@ -76,8 +76,8 @@ def ocr_multi_pdf(uploaded_files: Iterable[UploadedFile], options: OcrOptions) -
             if result.return_code == 0:
                 successful.append(result)
             else:
-                st.error(f"Failed to process: {file_path}")
-                st.code(result.stderr, language="text")
+                st.error(f"OCRmyPDF failed to process {file_path} with error code {result.return_code}")
+                st.code(f"stdout:\n{result.stdout.decode()}\nstderr:\n{result.stderr.decode()}", language="text")
                 failed.append(result)
     return successful, failed
 
