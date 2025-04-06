@@ -10,7 +10,7 @@ if [ -v APT_PROXY ]; then
 fi
 
 apt-get update
-apt-get install -y --no-install-recommends curl pipx
+apt-get install -y --no-install-recommends curl
 apt-get autoremove -y
 apt-get clean
 rm -rf /var/lib/apt/lists/*

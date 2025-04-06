@@ -10,8 +10,8 @@ COPY --chown=ubuntu . /workspaces/ocr-pdf-web
 WORKDIR /workspaces/ocr-pdf-web
 
 RUN ./docker_apt_install.sh
-USER ubuntu
 RUN ./docker_pip_install.sh
+USER ubuntu
 
 EXPOSE 8502
 # streamlit run app.py
