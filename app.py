@@ -2,11 +2,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from io import BytesIO
 from itertools import chain
+from pathlib import Path
 import subprocess
 import tempfile
 from typing import Iterable
 import zipfile
 
+from PIL.Image import Image
+from pdf2image import convert_from_bytes
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
@@ -95,6 +98,55 @@ def create_ocr_zip_buffer(ocr_results: Iterable[OcrResult]) -> BytesIO:
         return buffer
 
 
+def save_image_file(image: Image, dir_path: Path, source_file_name: str, page_number: int, image_format: str, quality: int) -> Path:
+    """
+    Saves a PIL Image in the specified directory with the given format and (if JPEG) quality.
+    """
+    file_path = dir_path / f"{source_file_name}.page_{page_number}.{image_format.lower()}"
+    match image_format.lower():
+        case 'jpeg':
+            image.save(file_path, 'JPEG', quality=quality)
+        case 'png':
+            image.save(file_path, 'PNG')
+        case _:
+            raise ValueError(f"Unexpected image format: {image_format}")
+    return file_path
+
+
+def extract_images_from_multi_pdf(uploaded_files: Iterable[UploadedFile], dpi: int) -> dict[str, list[Image]]:
+    """
+    Extracts pages as images from multiple PDF files using pdf2image and returns a dictionary with PDF file names as keys and lists of PIL Image objects as values.
+    """
+    results = {}
+    for uploaded_file in uploaded_files:
+        filename = uploaded_file.name
+        with st.spinner(f"Processing {filename}..."):
+            try:
+                results[filename] = convert_from_bytes(uploaded_file.read(), dpi=dpi)
+            except Exception as e:
+                st.error(f"Failed to extract images from {filename}: {e}")
+                continue
+    return results
+
+
+def create_images_zip_buffer(extraction: dict[str, list[Image]], image_format: str, quality: int) -> BytesIO:
+    """
+    Creates a ZIP archive buffer containing extracted images from PDF files.
+    """
+    with st.spinner("Creating ZIP archive..."):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_paths = []
+            for file_name, images in extraction.items():
+                for i, img in enumerate(images):
+                    file_paths.append(save_image_file(img, Path(temp_dir), Path(file_name).stem, i + 1, image_format, quality))
+            zip_buffer = BytesIO()
+            with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+                for file_path in file_paths:
+                    zip_file.write(file_path, file_path.name)
+            zip_buffer.seek(0)
+            return zip_buffer
+
+
 def main() -> None:
     """Streamlit app entry point."""
     st.set_page_config(page_title="OCRmyPDF")
@@ -111,6 +163,16 @@ def main() -> None:
         if st.form_submit_button("OCR"):
             options = OcrOptions(rotate_pages, deskew, clean_option, redo_ocr, optimize_n)
             st.session_state.result = create_ocr_zip_buffer(ocr_multi_pdf(uploaded_files, options)[0])
+    with st.form("extract"):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            dpi = st.number_input("DPI", min_value=72, max_value=1200, value=200)
+        with col2:
+            image_format = st.selectbox("Image Format", ["JPEG", "PNG"])
+        with col3:
+            quality = st.number_input("JPEG Quality", min_value=1, max_value=100, value=95)
+        if st.form_submit_button("Extract"):
+            st.session_state.result = create_images_zip_buffer(extract_images_from_multi_pdf(uploaded_files, dpi), image_format, quality)
     st.download_button(
         label="Download",
         disabled=not st.session_state.result,
