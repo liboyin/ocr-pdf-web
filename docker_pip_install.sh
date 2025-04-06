@@ -28,7 +28,7 @@ fi
 
 cat "$PIP_CONF_PATH"
 
-python -m pip install streamlit
+python -m pip install pdf2image streamlit
 
 # Remove pip cache
 pip_cache_dirs=(
