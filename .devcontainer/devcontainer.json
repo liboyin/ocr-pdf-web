@@ -6,6 +6,7 @@
             "configureZshAsDefaultShell": "true"
         }
     },
+    "overrideCommand": true,
     "remoteUser": "ubuntu",
     "workspaceFolder": "/workspaces/ocr-pdf-web",
     "mounts": [
