@@ -82,16 +82,17 @@ def ocr_multi_pdf(uploaded_files: Iterable[UploadedFile], options: OcrOptions) -
     return successful, failed
 
 
-def create_zip_buffer(ocr_results: Iterable[OcrResult]) -> BytesIO:
+def create_ocr_zip_buffer(ocr_results: Iterable[OcrResult]) -> BytesIO:
     """
     Creates a ZIP archive buffer from an iterable of successful OCR results.
     """
-    buffer = BytesIO()
-    with zipfile.ZipFile(buffer, 'w') as zip_file:
-        for result in ocr_results:
-            zip_file.writestr(result.file_name, result.output_file_content)
-    buffer.seek(0)
-    return buffer
+    with st.spinner("Creating ZIP archive..."):
+        buffer = BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as zip_file:
+            for result in ocr_results:
+                zip_file.writestr(result.file_name, result.output_file_content)
+        buffer.seek(0)
+        return buffer
 
 
 def main() -> None:
@@ -100,7 +101,7 @@ def main() -> None:
     st.title("OCRmyPDF Web Portal")
     st.caption(f"Last updated: {datetime.now().strftime('%H:%M:%S.%f')[:-3]}")
     uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
-    successful: list[OcrResult] = []
+    st.session_state.result = b''
     with st.form(key="ocr"):
         rotate_pages = st.checkbox("Fix a mixture of landscape and portrait pages")
         deskew = st.checkbox("Rotate pages so that text is horizontal")
@@ -109,12 +110,12 @@ def main() -> None:
         optimize_n = st.slider("Reduce output PDF file size. 0 for lossless optimization; 3 for most aggressive optimization", min_value=0, max_value=3, value=1)
         if st.form_submit_button("OCR"):
             options = OcrOptions(rotate_pages, deskew, clean_option, redo_ocr, optimize_n)
-            successful, _ = ocr_multi_pdf(uploaded_files, options)
+            st.session_state.result = create_ocr_zip_buffer(ocr_multi_pdf(uploaded_files, options)[0])
     st.download_button(
         label="Download",
-        disabled=not successful,
-        data=create_zip_buffer(successful).getvalue(),
-        file_name="OCRmyPDF.zip",
+        disabled=not st.session_state.result,
+        data=st.session_state.result,
+        file_name=f"OCRmyPDF.{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip",
         mime="application/zip",
     )
 
