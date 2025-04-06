@@ -100,20 +100,23 @@ def main() -> None:
     st.title("OCRmyPDF Web Portal")
     st.caption(f"Last updated: {datetime.now().strftime('%H:%M:%S.%f')[:-3]}")
     uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
-    rotate_pages = st.checkbox("Fix a mixture of landscape and portrait pages")
-    deskew = st.checkbox("Rotate pages so that text is horizontal")
-    redo_ocr = st.checkbox("Redo OCR on an OCRed file")
-    clean_option = st.radio("Cleanup options", ("Do not clean up", CLEAN, CLEAN_FINAL))
-    optimize_n = st.slider("Reduce output PDF file size. 0 for lossless optimization; 3 for most aggressive optimization", min_value=0, max_value=3, value=1)
-    if st.button("Process", disabled=not uploaded_files):
-        options = OcrOptions(rotate_pages, deskew, clean_option, redo_ocr, optimize_n)
-        successful, _ = ocr_multi_pdf(uploaded_files, options)
-        st.download_button(
-            label="Download",
-            data=create_zip_buffer(successful).getvalue(),
-            file_name="OCRmyPDF.zip",
-            mime="application/zip",
-        )
+    successful: list[OcrResult] = []
+    with st.form(key="ocr"):
+        rotate_pages = st.checkbox("Fix a mixture of landscape and portrait pages")
+        deskew = st.checkbox("Rotate pages so that text is horizontal")
+        redo_ocr = st.checkbox("Redo OCR on an OCRed file")
+        clean_option = st.radio("Cleanup options", ("Do not clean up", CLEAN, CLEAN_FINAL))
+        optimize_n = st.slider("Reduce output PDF file size. 0 for lossless optimization; 3 for most aggressive optimization", min_value=0, max_value=3, value=1)
+        if st.form_submit_button("OCR"):
+            options = OcrOptions(rotate_pages, deskew, clean_option, redo_ocr, optimize_n)
+            successful, _ = ocr_multi_pdf(uploaded_files, options)
+    st.download_button(
+        label="Download",
+        disabled=not successful,
+        data=create_zip_buffer(successful).getvalue(),
+        file_name="OCRmyPDF.zip",
+        mime="application/zip",
+    )
 
 
 if __name__ == "__main__":
